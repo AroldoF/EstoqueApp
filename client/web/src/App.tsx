@@ -1,10 +1,10 @@
-function App() {
+import {Routes} from './routes/Index'
+
+export default function App() {
 
   return (
-    <>
-      <h1 className="">Ola</h1>
-    </>
+    <Routes/>
   )
 }
 
-export default App
+
