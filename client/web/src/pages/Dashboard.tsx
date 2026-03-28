@@ -19,6 +19,12 @@ export function Dashboard(){
   const navigate = useNavigate()
   const [products,setProducts]=useState<Product[]>([])
   const [isLoading,setIsLoading] = useState(true)
+  const [search, setSearch] = useState('')
+
+
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(search.toLowerCase())
+  )
 
 
   async function loadProducts() {
@@ -74,6 +80,7 @@ export function Dashboard(){
   }
 
 
+
   return (
     <div className='flex flex-col gap-5'>
       <div className='h-[1px] bg-[var(--color-border)]'></div>
@@ -84,16 +91,22 @@ export function Dashboard(){
         <StatsCard title='Valor Total' value={formattedInventoryValue}/>
       </div>
       
-      <SearchInput placeholder='Buscar por nome...'/>
+      <SearchInput 
+        placeholder='Buscar por nome...'
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
-     {!hasProducts ? (
+     {filteredProducts.length === 0 ? (
         <div className="flex flex-col gap-2 items-center justify-center">
           <img className='w-94' src={emptyState} alt="Sem produtos" />
-          <p className="text-[var(--color-text-secondary)] mt-1 text-lg font-semibold">Nenhum produto cadastrado</p>
+          <p className="text-[var(--color-text-secondary)] mt-1 text-lg font-semibold">
+            {hasProducts ? "Nenhum produto encontrado para sua busca" : "Nenhum produto cadastrado"}
+          </p>
         </div>
       ) : (
         <ProductTable 
-        products={products} 
+        products={filteredProducts} 
         onEdit={handleEditProduct}
         onDelete={handleDeleteProduct}
         />
