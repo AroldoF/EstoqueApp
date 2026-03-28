@@ -3,6 +3,8 @@ import {SearchInput} from '../components/SearchInput'
 import { Button } from '../components/Button'
 import {ProductTable} from '../components/ProductTable'
 import type {Product} from '../types/Product'
+import {Plus} from 'lucide-react'
+
 
 import {useNavigate} from 'react-router'
 import {useState} from 'react'
@@ -38,7 +40,7 @@ const MOCK_PRODUCTS: Product[] = [
 
 export function Dashboard(){
   const navigate = useNavigate()
-  const [products,setProducts]=useState<Product[]>(MOCK_PRODUCTS)
+  const [products,setProducts]=useState<Product[]>([])
 
   const hasProducts = products.length > 0;
   const totalProducts = products.length
@@ -86,8 +88,8 @@ export function Dashboard(){
 
      {!hasProducts ? (
         <div className="flex flex-col gap-2 items-center justify-center">
-          <img src={emptyState} alt="Sem produtos" />
-          <p>Nenhum produto cadastrado</p>
+          <img className='w-94' src={emptyState} alt="Sem produtos" />
+          <p className="text-[var(--color-text-secondary)] mt-1 text-lg font-semibold">Nenhum produto cadastrado</p>
         </div>
       ) : (
         <ProductTable 
@@ -97,8 +99,10 @@ export function Dashboard(){
         />
       )}
 
-      <Button text="Adicionar Produto" onClick={handleCreateProduct} />
-   
+      <div className="flex justify-center mt-2">
+        <Button text="Adicionar Produto" icon={Plus} onClick={handleCreateProduct} />
+      </div>
+    
 
   </div>
 

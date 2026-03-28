@@ -1,5 +1,5 @@
 import { type ButtonHTMLAttributes,type ElementType} from 'react'
-import {Plus} from  'lucide-react'
+
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
   text: string
@@ -8,16 +8,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement>{
 
 }
 
-export function Button({text,variant = 'primary',icon = Plus,...rest}:ButtonProps){
+export function Button({text,variant = 'primary',icon:Icon,...rest}:ButtonProps){
   return(
     <button 
-      className={`flex items-center justify-center w-full gap-2 px-6 py-3  rounded-lg font-bold transition-all
+      className={`flex items-center justify-center w-fit gap-2 px-5 py-[0.875rem] rounded-lg font-bold transition-all cursor-pointer
         ${variant === 'primary'? 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-hover)] active:scale-95' 
-        : 'bg-transparent text-[var(--color-text-secondary)] hover:text-white'}
+        : 'bg-[var(--color-danger)] text-[var(text-white)]'}
             `}
         {...rest}
     >
-      {icon && <Plus size={20} />}
+      {Icon && <Icon size={20} />}
       {text}
     </button>
   )

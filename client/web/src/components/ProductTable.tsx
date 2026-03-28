@@ -71,14 +71,14 @@ export function ProductTable({products, onEdit,onDelete}:ProductTableProps){
                   <div className="flex items-center justify-center gap-2">
                     <button
                       onClick={() => onEdit(product)}
-                      className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors"
+                      className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
                       title="Editar"
                     >
                       <PencilLine size={18} />
                     </button>
                     <button
                       onClick={() => onDelete(product.id)}
-                      className="p-1.5 rounded-md hover:bg-[var(--color-danger-light)] text-[var(--color-danger)] transition-colors"
+                      className="p-1.5 rounded-md hover:bg-[var(--color-danger-light)] text-[var(--color-danger)] transition-colors cursor-pointer"
                       title="Excluir"
                     >
                       <Trash2 size={18} />
