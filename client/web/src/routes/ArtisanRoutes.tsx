@@ -11,7 +11,7 @@ export function ArtisanRoutes(){
   <Routes>
     <Route path="/" element={<AppLayout/>}>
       <Route path="/" element={<Dashboard/>}></Route>
-      <Route path="/" element={<ProductRegistration/>}/>
+      <Route path="/product" element={<ProductRegistration/>}/>
     </Route>
   </Routes>
   )
