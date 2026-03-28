@@ -68,7 +68,7 @@ export function ProductTable({products, onEdit,onDelete}:ProductTableProps){
                 </td>
 
                 <td className="p-4">
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-start gap-2">
                     <button
                       onClick={() => onEdit(product)}
                       className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"
