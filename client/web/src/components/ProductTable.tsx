@@ -27,7 +27,7 @@ export function ProductTable({products, onEdit,onDelete}:ProductTableProps){
 }
 
   return (
-    <div className="w-full border border-[var(--color-border)] rounded-xl overflow-hidden">
+    <div className="w-full border border-[var(--color-border)] rounded-xl overflow-auto max-h-[500px] custom-scrollbar">
       <table className="w-full text-left">
         <thead className="bg-[var(--color-surface)] text-[var(--color-text-secondary)] text-sm">
           <tr>
@@ -68,7 +68,7 @@ export function ProductTable({products, onEdit,onDelete}:ProductTableProps){
                 </td>
 
                 <td className="p-4">
-                  <div className="flex items-center justify-center gap-2">
+                  <div className="flex items-center justify-start gap-2">
                     <button
                       onClick={() => onEdit(product)}
                       className="p-1.5 rounded-md hover:bg-[var(--color-surface-hover)] text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors cursor-pointer"

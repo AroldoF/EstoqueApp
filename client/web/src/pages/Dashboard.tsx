@@ -2,45 +2,51 @@ import {StatsCard} from '../components/StatsCard'
 import {SearchInput} from '../components/SearchInput'
 import { Button } from '../components/Button'
 import {ProductTable} from '../components/ProductTable'
-import type {Product} from '../types/Product'
 import {Plus} from 'lucide-react'
 
+import type {Product} from '../types/Product'
+import {api} from '../services/api'
 
 import {useNavigate} from 'react-router'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
+
 
 import emptyState from '../assets/empty_state_box_kawaii.svg'
 
-const MOCK_PRODUCTS: Product[] = [
-  {
-    id: 1,
-    name: 'Teclado Mecânico RGB',
-    description: 'Switch Blue, ABNT2, Iluminação Rainbow',
-    stock: 15,
-    price: 249.90,
-    is_active: true
-  },
-  {
-    id: 2, 
-    name: 'Mouse Gamer Pro',
-    description: '12000 DPI, Sensor óptico de alta precisão',
-    stock: 5, 
-    price: 159.00,
-    is_active: true
-  },
-  {
-    id: 3,
-    name: 'Monitor 24" UltraWide',
-    description: 'Painel IPS, 75Hz, Full HD',
-    stock: 0, 
-    price: 899.00,
-    is_active: false
-  }
-];
+
 
 export function Dashboard(){
   const navigate = useNavigate()
   const [products,setProducts]=useState<Product[]>([])
+  const [isLoading,setIsLoading] = useState(true)
+  const [search, setSearch] = useState('')
+
+
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(search.toLowerCase())
+  )
+
+
+  async function loadProducts() {
+    try {
+      setIsLoading(true)
+      const response = await api.get('/product')
+      setProducts(response.data)
+
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error)
+      alert("Não foi possível carregar os produtos. Verifique se o servidor está rodando.")
+
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // componente nasceu
+  useEffect(() => {
+    loadProducts()
+  }, [])
+
 
   const hasProducts = products.length > 0;
   const totalProducts = products.length
@@ -74,6 +80,7 @@ export function Dashboard(){
   }
 
 
+
   return (
     <div className='flex flex-col gap-5'>
       <div className='h-[1px] bg-[var(--color-border)]'></div>
@@ -84,16 +91,22 @@ export function Dashboard(){
         <StatsCard title='Valor Total' value={formattedInventoryValue}/>
       </div>
       
-      <SearchInput placeholder='Buscar por nome...'/>
+      <SearchInput 
+        placeholder='Buscar por nome...'
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+      />
 
-     {!hasProducts ? (
+     {filteredProducts.length === 0 ? (
         <div className="flex flex-col gap-2 items-center justify-center">
-          <img className='w-94' src={emptyState} alt="Sem produtos" />
-          <p className="text-[var(--color-text-secondary)] mt-1 text-lg font-semibold">Nenhum produto cadastrado</p>
+          <img className='w-120' src={emptyState} alt="Sem produtos" />
+          <p className="text-[var(--color-text-secondary)] mt-1 text-lg font-semibold">
+            {hasProducts ? "Nenhum produto encontrado para sua busca" : "Nenhum produto cadastrado"}
+          </p>
         </div>
       ) : (
         <ProductTable 
-        products={products} 
+        products={filteredProducts} 
         onEdit={handleEditProduct}
         onDelete={handleDeleteProduct}
         />
