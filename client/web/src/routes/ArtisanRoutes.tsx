@@ -1,6 +1,6 @@
 import {Routes, Route} from "react-router"
 
-import { AppLayout } from "../components/AppLayout"
+import { AppLayout } from "../layout/AppLayout"
 
 import { Dashboard } from "../pages/Dashboard"
 import { ProductRegistration } from "../pages/ProductRegistration"
@@ -11,7 +11,7 @@ export function ArtisanRoutes(){
   <Routes>
     <Route path="/" element={<AppLayout/>}>
       <Route path="/" element={<Dashboard/>}></Route>
-      <Route path="/" element={<ProductRegistration/>}/>
+      <Route path="/register" element={<ProductRegistration/>}/>
     </Route>
   </Routes>
   )
