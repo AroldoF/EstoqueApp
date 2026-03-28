@@ -1,6 +1,6 @@
 import {Routes, Route} from "react-router"
 
-import { AppLayout } from "../components/AppLayout"
+import { AppLayout } from "../layout/AppLayout"
 
 import { Dashboard } from "../pages/Dashboard"
 import { ProductRegistration } from "../pages/ProductRegistration"
