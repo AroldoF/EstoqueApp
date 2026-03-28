@@ -1,5 +1,8 @@
 import { Card } from "./Card";
 import { InputField } from "./InputField";
+import { Button } from './Button'
+import { Save } from 'lucide-react';
+
 
 export function Forms(){
     return(
@@ -24,6 +27,12 @@ export function Forms(){
                 <label htmlFor="description"></label>
                 <textarea id="description" name="description" className="w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-purple-600 focus:ring-1 focus:ring-purple-600"></textarea>
             </div>
+
+            <div className="flex flex-row justify-end gap-4 mt-2">
+                <Button variant="secundary" text="Cancelar" />
+                <Button text="Cadastrar Produto" icon={Save}/>
+            </div>
+            
         </Card>
     )
 }
