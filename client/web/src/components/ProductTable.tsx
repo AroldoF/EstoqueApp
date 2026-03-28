@@ -27,7 +27,7 @@ export function ProductTable({products, onEdit,onDelete}:ProductTableProps){
 }
 
   return (
-    <div className="w-full border border-[var(--color-border)] rounded-xl overflow-hidden">
+    <div className="w-full border border-[var(--color-border)] rounded-xl overflow-auto max-h-[500px] custom-scrollbar">
       <table className="w-full text-left">
         <thead className="bg-[var(--color-surface)] text-[var(--color-text-secondary)] text-sm">
           <tr>

@@ -99,7 +99,7 @@ export function Dashboard(){
 
      {filteredProducts.length === 0 ? (
         <div className="flex flex-col gap-2 items-center justify-center">
-          <img className='w-94' src={emptyState} alt="Sem produtos" />
+          <img className='w-120' src={emptyState} alt="Sem produtos" />
           <p className="text-[var(--color-text-secondary)] mt-1 text-lg font-semibold">
             {hasProducts ? "Nenhum produto encontrado para sua busca" : "Nenhum produto cadastrado"}
           </p>
