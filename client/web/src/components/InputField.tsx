@@ -7,7 +7,7 @@ export const InputField = forwardRef(({children, id, type, error, className, ...
                 { children }
             </label>
             <input type={type} id={id} ref={ref} error={error} {...props}
-            className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 
+            className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 border-[var(--color-border)]
             ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'focus:border-[var(--color-border-focus)] focus:ring-[var(--color-border-focus)]'}`}/>
 
             {error && (
