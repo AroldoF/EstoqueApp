@@ -10,6 +10,7 @@ class ProductRead(Schema):
 
 class ProductCreate(Schema):
     name: str
+    sku: str
     description: str
     stock: int
     price: Decimal = Field(0)
