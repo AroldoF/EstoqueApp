@@ -26,7 +26,7 @@ export function Dashboard(){
     product.name.toLowerCase().includes(search.toLowerCase())
   )
 
-
+ 
   async function loadProducts() {
     try {
       setIsLoading(true)

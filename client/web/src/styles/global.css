@@ -14,3 +14,8 @@ body, input, textarea, button{
 
     -webkit-font-smoothing: antialiased;
 }
+
+.input-error{
+  font-family: var(--default-font-family);
+  color: red
+}
