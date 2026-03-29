@@ -73,10 +73,11 @@ export function Dashboard(){
     navigate('/register')
   }
   function handleEditProduct(product: Product){
-    // implementar
+    navigate(`/update/${product.id}`)
   }
-  function handleDeleteProduct(id: number| string){
-    //implementar
+  async function handleDeleteProduct(id: number| string){
+    await api.delete(`/product/${id}/`)
+    loadProducts()
   }
 
 

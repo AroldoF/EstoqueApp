@@ -3,7 +3,9 @@ from decimal import Decimal
 from datetime import datetime
 
 class ProductRead(Schema):
+    id: int
     name: str
+    sku: str
     description: str
     stock: int
     price: Decimal = Field(Decimal(0))
@@ -20,6 +22,7 @@ class ProductCreate(Schema):
 
 class ProductUpdate(Schema):
     name: str | None = None
+    sku: str | None = None
     description: str | None = None
     stock: int | None = None
     price: Decimal | None = None

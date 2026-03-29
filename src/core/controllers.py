@@ -1,18 +1,16 @@
 from ninja import NinjaAPI
 from . import schemas
-from .models import Product
 from . import services
 api = NinjaAPI()
 
 
 @api.post('/product', response=schemas.ProductCreate)
-def product_create(request, payload:schemas.ProductCreate):
-    product = Product.objects.create(**payload.dict())
-    return product
+def product_create(request, payload:schemas.ProductCreate): 
+    return services.create_product(payload)
 
 @api.get('/product', response=list[schemas.ProductRead])
 def list_products(request):
-    return Product.objects.all()
+    return services.list_product()
 
 @api.get('/product/{product_id}/', response=schemas.ProductRead)
 def get_product(request, product_id: int):
@@ -21,3 +19,7 @@ def get_product(request, product_id: int):
 @api.patch('/product/{product_id}/', response= schemas.ProductRead)
 def update_product(request, product_id: int, payload:schemas.ProductUpdate):
     return services.update_product(product_id, payload)
+
+@api.delete('/product/{product_id}/')
+def delete_product(request, product_id: int):
+    return services.delete_product(product_id)
