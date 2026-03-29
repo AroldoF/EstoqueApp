@@ -18,7 +18,6 @@ class ProductCreate(Schema):
     price: Decimal = Field(Decimal(0))
     is_active: bool
 
-
 class ProductUpdate(Schema):
     name: str | None = None
     description: str | None = None
