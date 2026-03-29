@@ -7,12 +7,18 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 import {api} from '../services/api'
+import type { Product } from "../types/Product";
+import { useEffect } from "react";
 
+type Props = {
+    data?: Product
+    isEditing?: boolean
+    productId?: number
+}
 
-
-export function Forms(){
+export function Forms({data, isEditing = false, productId}: Props){
     const navigate = useNavigate()
-    const { register, handleSubmit, formState: { errors }} = useForm()
+    const { register, handleSubmit, reset, formState: { errors }} = useForm()
 
     function handleDashboard(){
         navigate('/')
@@ -29,6 +35,46 @@ export function Forms(){
             alert("Não foi possível cadastrar o produto.")
         }
     }
+    function getChangedFields(original: Product | undefined, updated: any) {
+    const ignoredFields = ["id", "created_at"]
+    const result: any = {}
+
+    for (const key in updated) {
+        if (ignoredFields.includes(key)) continue
+
+        if (String(updated[key]) !== String(original?.[key])) {
+            result[key] = updated[key]
+        }
+    }
+
+    return result
+}
+
+    async function updateProduct(formData){
+    try{
+        const changedData = getChangedFields(data, formData)
+
+        if (Object.keys(changedData).length === 0) {
+            alert("Nenhuma alteração feita")
+            return
+        }
+        console.log(changedData)
+
+        await api.patch(`/product/${productId}/`, changedData)
+
+        alert("Produto atualizado com sucesso!")
+        handleDashboard()
+    }
+    catch (error){
+        console.log("Erro ao atualizar o produto:", error)
+        alert("Não foi possível atualizar o produto.")
+    }
+}
+    useEffect(() => {
+        if (data) {
+            reset(data)
+        }
+        }, [data, reset])
 
 
     return(
@@ -37,7 +83,9 @@ export function Forms(){
 
             <Card className={"max-w-3xl w-full mx-auto"}>
                 <form className={"flex flex-col justify-center gap-9"}
-                onSubmit={handleSubmit(createProduct)}>
+                onSubmit={handleSubmit((formData) =>
+  isEditing ? updateProduct(formData) : createProduct(formData)
+)}>
 
                     <div className="flex flex-col gap-3">
                         <h2 className="text-xl text-[var(--color-text-primary)]">Informações Básicas</h2>
