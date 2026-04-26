@@ -19,28 +19,114 @@ import logging
 
 from protos import auth_pb2
 from protos import auth_pb2_grpc
+from core.database import SessionLocal
+from core.validators import is_valid_email, is_strong_password
+from core.hashing import criptography, verify_password
+from models.user import User
+from core.security import create_token, decode_token
+from datetime import timedelta
+
 
 
 class AuthService(auth_pb2_grpc.AuthServiceServicer):
     def RegisterUser(self, request, context):
-        return auth_pb2.RegisterResponse(
-            success=True,
-            message="Usuário cadastrado com sucesso",
-            user_id='fake-123'
-        )
+        
+        if not is_valid_email(request.email):
+            return auth_pb2.RegisterResponse(
+                success=False,
+                message='E-mail inválido',
+                user_id=''
+            )
+            
+        is_strong, error_msg = is_strong_password(request.password)
+        if not is_strong:
+            return auth_pb2.RegisterResponse(
+                success=False,
+                message=error_msg,
+                user_id=''
+            )
+            
+        db = SessionLocal()
+        
+        try:
+            user_exists = db.query(User).filter(User.email == request.email).first()
+            
+            if user_exists:
+                return auth_pb2.RegisterResponse(
+                    success=False,
+                    message="Já existe usuário com esse e-mail",
+                    user_id=''
+                )
+            
+            hashed_pass = criptography(request.password)
+            
+            new_user = User(email=request.email, hashed_password=hashed_pass,name=request.name)
+        
+            db.add(new_user)
+            db.commit()
+            db.refresh(new_user)
+        
+            return auth_pb2.RegisterResponse(
+                success=True,
+                message="Usuário cadastrado com sucesso",
+                user_id=new_user.user_id
+            )
+        except Exception as e:
+            db.rollback() 
+            print(f"Erro no banco: {e}")
+            return auth_pb2.RegisterResponse(success=False, message="Erro no servidor.", user_id="")
+        finally:
+            db.close()   
         
     def Login(self,request,context):
-        return auth_pb2.LoginResponse(
-            sucess=True,
-            token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9',
-            message='Login realizado com sucesso!'
-        )
+        
+        db = SessionLocal()
+        
+        try:
+            user = db.query(User).filter(User.email == request.email).first()
+
+            if not user or not verify_password(request.password, user.hashed_password):
+                return auth_pb2.LoginResponse(
+                    success=False,
+                    token='',
+                    message='Erro no servidor'
+                )
+                
+            access_token = create_token(user.user_id)
+            
+            # verificar se vai precisar do refresh_token
+            # refresh_token = create_token(user.user_id, duration_token=timedelta(days=7))
+            
+            return auth_pb2.LoginResponse(
+                success=True,
+                token=access_token,
+                message='Login realizado com sucesso!'
+            )
+            
+        except Exception as e:
+            print(f"Erro no banco: {e}")
+            return auth_pb2.LoginResponse(
+                success=False,
+                token='',
+                message='Erro no servidor'
+            )
+        finally:
+            db.close()  
     
     def ValidateToken(self,request,context):
+        payload = decode_token(request.token)
+        
+        if type(payload) is dict and "error" in payload:
+            return auth_pb2.ValidateTokenResponse(
+                is_valid=False,
+                user_id='',
+                email=''
+            )
+            
         return auth_pb2.ValidateTokenResponse(
             is_valid=True,
-            user_id='fake-123',
-            email='user@testeapp.com'
+            user_id=payload, # O nosso decode atual retorna diretamente o user_id (string)
+            email=''
         )
 
 
