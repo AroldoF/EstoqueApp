@@ -25,6 +25,7 @@ from core.hashing import criptography, verify_password
 from models.user import User
 from core.security import create_token, decode_token
 from datetime import timedelta
+from sqlalchemy.exc import IntegrityError
 
 
 
@@ -46,72 +47,71 @@ class AuthService(auth_pb2_grpc.AuthServiceServicer):
                 user_id=''
             )
             
-        db = SessionLocal()
-        
-        try:
-            user_exists = db.query(User).filter(User.email == request.email).first()
+        with SessionLocal() as db:
+            try:
+                user_exists = db.query(User).filter(User.email == request.email).first()
+                
+                if user_exists:
+                    return auth_pb2.RegisterResponse(
+                        success=False,
+                        message="Já existe usuário com esse e-mail",
+                        user_id=''
+                    )
+                
+                hashed_pass = criptography(request.password)
+                
+                new_user = User(email=request.email, hashed_password=hashed_pass,name=request.name)
             
-            if user_exists:
+                db.add(new_user)
+                db.commit()
+                db.refresh(new_user)
+            
                 return auth_pb2.RegisterResponse(
-                    success=False,
-                    message="Já existe usuário com esse e-mail",
-                    user_id=''
+                    success=True,
+                    message="Usuário cadastrado com sucesso",
+                    user_id=new_user.user_id
                 )
-            
-            hashed_pass = criptography(request.password)
-            
-            new_user = User(email=request.email, hashed_password=hashed_pass,name=request.name)
-        
-            db.add(new_user)
-            db.commit()
-            db.refresh(new_user)
-        
-            return auth_pb2.RegisterResponse(
-                success=True,
-                message="Usuário cadastrado com sucesso",
-                user_id=new_user.user_id
-            )
-        except Exception as e:
-            db.rollback() 
-            print(f"Erro no banco: {e}")
-            return auth_pb2.RegisterResponse(success=False, message="Erro no servidor.", user_id="")
-        finally:
-            db.close()   
+            except IntegrityError:
+                db.rollback() 
+                return auth_pb2.RegisterResponse(success=False, message="Conflito: E-mail já está em uso.", user_id="")
+            except Exception as e:
+                db.rollback() 
+                                
+                context.set_code(grpc.StatusCode.INTERNAL)
+                context.set_details("Erro interno ao processar a requisição no banco.")
+                
+                return auth_pb2.RegisterResponse(success=False, message="Erro interno no servidor.", user_id="")
         
     def Login(self,request,context):
         
-        db = SessionLocal()
-        
-        try:
-            user = db.query(User).filter(User.email == request.email).first()
+        with SessionLocal() as db:
+            try:
+                user = db.query(User).filter(User.email == request.email).first()
 
-            if not user or not verify_password(request.password, user.hashed_password):
+                if not user or not verify_password(request.password, user.hashed_password):
+                    return auth_pb2.LoginResponse(
+                        success=False,
+                        token='',
+                        message='Erro no servidor'
+                    )
+                    
+                access_token = create_token(user.user_id)
+                
+                # verificar se vai precisar do refresh_token
+                # refresh_token = create_token(user.user_id, duration_token=timedelta(days=7))
+                
+                return auth_pb2.LoginResponse(
+                    success=True,
+                    token=access_token,
+                    message='Login realizado com sucesso!'
+                )
+            except Exception as e:
+                print(f"Erro no banco: {e}")
                 return auth_pb2.LoginResponse(
                     success=False,
                     token='',
                     message='Erro no servidor'
                 )
-                
-            access_token = create_token(user.user_id)
-            
-            # verificar se vai precisar do refresh_token
-            # refresh_token = create_token(user.user_id, duration_token=timedelta(days=7))
-            
-            return auth_pb2.LoginResponse(
-                success=True,
-                token=access_token,
-                message='Login realizado com sucesso!'
-            )
-            
-        except Exception as e:
-            print(f"Erro no banco: {e}")
-            return auth_pb2.LoginResponse(
-                success=False,
-                token='',
-                message='Erro no servidor'
-            )
-        finally:
-            db.close()  
     
     def ValidateToken(self,request,context):
         payload = decode_token(request.token)
