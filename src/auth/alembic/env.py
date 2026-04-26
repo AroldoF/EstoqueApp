@@ -16,23 +16,21 @@ sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from core.config import settings
 
-# this is the Alembic Config object, which provides
-# access to the values within the .ini file in use.
+# this is the Alembic Config object...
 config = context.config
 
-db_url = settings.DATABASE_URL.replace("+aiosqlite", "")
-config.set_main_option("sqlalchemy.url", db_url)
+# --- CORREÇÃO 1: Injetando a URL no Alembic ---
+# Isso substitui a linha comentada no alembic.ini
+config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
 
 # Interpret the config file for Python logging.
-# This line sets up loggers basically.
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-# add your model's MetaData object here
-# for 'autogenerate' support
-# from myapp import mymodel
+# --- CORREÇÃO 2: Importando os modelos ---
 from core.database import Base
-# target_metadata = mymodel.Base.metadata
+from models.user import User # IMPORTANTE: Se não importar, o Alembic não vê a tabela!
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
