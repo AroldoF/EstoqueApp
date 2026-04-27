@@ -10,7 +10,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<{ token: string } | null>(null);
   const isAuthenticated = !!user;
 
   useEffect(() => {
