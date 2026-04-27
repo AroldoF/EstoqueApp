@@ -4,7 +4,7 @@ export const InputField = forwardRef(({children, id, type, error, className, ...
     return(
         <div className="flex flex-col gap-3">
             <label className={`text-sm text-[var(--color-text-primary)] ${className ? className : ''}`} htmlFor={id}>
-                { children }
+            { children }
             </label>
             <input type={type} id={id} ref={ref} error={error} {...props}
             className={`w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-1 border-[var(--color-border)]
