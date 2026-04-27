@@ -1,10 +1,13 @@
 import { BrowserRouter } from "react-router";
 import { ArtisanRoutes } from "./ArtisanRoutes";
+import { AuthProvider } from "../context/AuthContext";
 
 export function Routes(){
   return(
     <BrowserRouter>
-      <ArtisanRoutes/>
+      <AuthProvider> 
+        <ArtisanRoutes/>
+      </AuthProvider>
     </BrowserRouter>
   )
 }
