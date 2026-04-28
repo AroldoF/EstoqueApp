@@ -6,7 +6,7 @@ import { Dashboard } from "../pages/Dashboard"
 import { ProductRegistration } from "../pages/ProductRegistration"
 import ProductUpdate from "../pages/ProductUpdate"
 import { Login } from "../pages/Login"
-import { Register } from "../pages/Register"
+import { Signup } from "../pages/Signup"
 
 
 import { Navigate, Outlet } from "react-router";
@@ -24,7 +24,7 @@ export function ArtisanRoutes(){
   return(
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Register />} />
+      <Route path="/signup" element={<Signup />} />
 
      
       <Route element={<PrivateRoute/>}>

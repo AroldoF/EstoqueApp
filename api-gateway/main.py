@@ -7,16 +7,16 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# Liberar o React para conversar com o Gateway
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"], # URL do seu Vite
+    allow_origins=["http://localhost:5173"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Modelo para receber os dados do formulário React
+
 class LoginSchema(BaseModel):
     email: str
     password: str
@@ -24,23 +24,46 @@ class LoginSchema(BaseModel):
 @app.post("/api/login")
 async def login(data: LoginSchema):
     try:
-        # 1. Cria o canal de comunicação com o servidor gRPC da Renata
-        # Assumindo que o dela roda na porta 50051
+        
         channel = grpc.insecure_channel('localhost:50051')
         stub = auth_pb2_grpc.AuthServiceStub(channel)
 
-        # 2. Envia os dados para o microserviço de Auth
+        
         response = stub.Login(auth_pb2.LoginRequest(
             email=data.email,
             password=data.password
         ))
 
-        # 3. Se deu certo, devolve o token para o React
+        
         return {"token": response.token}
 
     except grpc.RpcError as e:
-        # Se o servidor da Renata estiver offline ou as credenciais erradas
+  
         raise HTTPException(status_code=401, detail="Erro na autenticação ou serviço fora do ar")
+    
+
+class RegisterSchema(BaseModel):
+    name: str
+    email: str
+    password: str
+
+
+@app.post("/api/signup")
+async def signup(data: RegisterSchema):
+    try:
+        channel = grpc.insecure_channel('localhost:50051')
+        stub = auth_pb2_grpc.AuthServiceStub(channel)
+
+        
+        response = stub.RegisterUser(auth_pb2.RegisterRequest(
+            name=data.name,
+            email=data.email,
+            password=data.password
+        ))
+
+        return {"success": response.success, "message": response.message}
+    except grpc.RpcError:
+        raise HTTPException(status_code=500, detail="Erro ao falar com serviço de Auth")
 
 @app.get("/")
 def read_root():

@@ -1,12 +1,30 @@
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link,useNavigate } from "react-router";
 import { InputField } from "../components/InputField";
+import { api } from "../services/api"; 
 
-export function Register() {
+export function Signup() {
+  const navigate = useNavigate();
   const { register, handleSubmit, watch, formState: { errors, isSubmitting } } = useForm();
   const password = watch("password");
 
-  const onSubmit = (data: any) => console.log("Cadastro:", data);
+  const onSubmit = async (data: any) => {
+    try {
+      await api.post("/signup", {
+        name: data.name,
+        email: data.email,
+        password: data.password
+      });
+
+      alert("Usuário cadastrado com sucesso!");
+      navigate("/login"); 
+
+    } catch (error: any) {
+     
+      const errorMessage = error.response?.data?.detail || "Erro ao realizar cadastro.";
+      alert(errorMessage);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center p-4">
