@@ -14,7 +14,18 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function PrivateRoute() {
-  const { isAuthenticated } = useContext(AuthContext);
+  
+  const { isAuthenticated, loading } = useContext(AuthContext);
+
+  
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-gray-500">Verificando sessão...</p>
+      </div>
+    );
+  }
+
 
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }
