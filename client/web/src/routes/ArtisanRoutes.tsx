@@ -6,7 +6,7 @@ import { Dashboard } from "../pages/Dashboard"
 import { ProductRegistration } from "../pages/ProductRegistration"
 import ProductUpdate from "../pages/ProductUpdate"
 import { Login } from "../pages/Login"
-import { Register } from "../pages/Register"
+import { Signup } from "../pages/Signup"
 
 
 import { Navigate, Outlet } from "react-router";
@@ -14,7 +14,18 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 
 function PrivateRoute() {
-  const { isAuthenticated } = useContext(AuthContext);
+  
+  const { isAuthenticated, loading } = useContext(AuthContext);
+
+  
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <p className="text-gray-500">Verificando sessão...</p>
+      </div>
+    );
+  }
+
 
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }
@@ -24,7 +35,7 @@ export function ArtisanRoutes(){
   return(
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Register />} />
+      <Route path="/signup" element={<Signup />} />
 
      
       <Route element={<PrivateRoute/>}>

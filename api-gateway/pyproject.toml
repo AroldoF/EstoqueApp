@@ -1,0 +1,14 @@
+[project]
+name = "api-gateway"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.136.1",
+    "grpcio>=1.80.0",
+    "grpcio-tools>=1.80.0",
+    "httpx>=0.28.1",
+    "pydantic>=2.13.3",
+    "uvicorn>=0.46.0",
+]
