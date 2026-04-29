@@ -2,7 +2,7 @@ import uuid
 from sqlalchemy import String, UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from core.database import Base, TimestampMixin
-
+from core.database import engine
 
 class User(Base, TimestampMixin):
     __tablename__ = "users"

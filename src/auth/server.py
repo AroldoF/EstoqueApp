@@ -49,6 +49,7 @@ class AuthService(auth_pb2_grpc.AuthServiceServicer):
             
         with SessionLocal() as db:
             try:
+                print('entrou')
                 user_exists = db.query(User).filter(User.email == request.email).first()
                 
                 if user_exists:
@@ -75,6 +76,7 @@ class AuthService(auth_pb2_grpc.AuthServiceServicer):
                 db.rollback() 
                 return auth_pb2.RegisterResponse(success=False, message="Conflito: E-mail já está em uso.", user_id="")
             except Exception as e:
+                print(e)
                 db.rollback() 
                                 
                 context.set_code(grpc.StatusCode.INTERNAL)

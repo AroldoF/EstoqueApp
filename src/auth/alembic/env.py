@@ -28,7 +28,7 @@ if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
 # --- CORREÇÃO 2: Importando os modelos ---
-from core.database import Base
+from auth.core.database import Base
 from models.user import User # IMPORTANTE: Se não importar, o Alembic não vê a tabela!
 
 target_metadata = Base.metadata

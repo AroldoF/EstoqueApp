@@ -8,7 +8,7 @@ dependencies = [
     "aiosqlite>=0.22.1",
     "alembic>=1.18.4",
     "bcrypt<4.0.0",
-    "fastapi>=0.136.1",
+    "fastapi[standard]>=0.136.1",
     "grpcio>=1.80.0",
     "grpcio-tools>=1.80.0",
     "passlib[bcrypt]>=1.7.4",

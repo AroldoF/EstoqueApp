@@ -4,8 +4,7 @@ from sqlalchemy import DateTime, create_engine
 from sqlalchemy.orm import Session, sessionmaker
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy.sql import func
-
-from core.config import settings
+from .config import settings
 
 engine = create_engine(
     settings.DATABASE_URL, connect_args={"check_same_thread": False}
@@ -23,3 +22,7 @@ class TimestampMixin:
 def get_session():
     with Session(engine) as session:
         yield session
+
+def create_db_and_tables():
+    # Isso vai procurar tudo que herda de 'Base' e criar no banco
+    Base.metadata.create_all(bind=engine)

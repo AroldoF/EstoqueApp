@@ -2,17 +2,21 @@ from django.shortcuts import get_object_or_404
 from .models import Product
 from . import schemas
 
-def list_product():
-    return Product.objects.all()
+def list_product(request):
+    user_id = request.auth["user_id"]
+    return Product.objects.filter(user_id=user_id)
 
-def create_product(payload: schemas.ProductCreate) -> Product:
-    return Product.objects.create(**payload.dict())
+def create_product(request, payload: schemas.ProductCreate) -> Product:
+    user_id = request.auth["user_id"]
+    return Product.objects.create(user_id=user_id, **payload.dict())
 
-def get_product(product_id: int) -> Product:
-    return get_object_or_404(Product, pk=product_id)
+def get_product(request, product_id: int) -> Product:
+    user_id = request.auth["user_id"]
+    return get_object_or_404(Product, pk=product_id, user_id=user_id)
 
-def update_product(product_id: int, payload: schemas.ProductUpdate) -> Product:
-    product = get_object_or_404(Product, pk=product_id)
+def update_product(request, product_id: int, payload: schemas.ProductUpdate) -> Product:
+    user_id = request.auth["user_id"]
+    product = get_object_or_404(Product, pk=product_id, user_id=user_id)
 
     data = payload.model_dump(exclude_none=True)
     for attr, value in data.items():
@@ -22,7 +26,8 @@ def update_product(product_id: int, payload: schemas.ProductUpdate) -> Product:
 
     return product
 
-def delete_product(product_id: int):
-    product = get_object_or_404(Product, pk=product_id)
+def delete_product(request, product_id: int):
+    user_id = request.auth["user_id"]
+    product = get_object_or_404(Product, pk=product_id, user_id=user_id)
     product.delete()
     return {'Message': 'Product deleted'}
