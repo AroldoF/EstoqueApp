@@ -1,7 +1,7 @@
 import grpc
 import auth_pb2
 import auth_pb2_grpc
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import httpx
@@ -52,52 +52,58 @@ class RegisterSchema(BaseModel):
 @app.post("/api/signup")
 async def signup(data: RegisterSchema):
     try:
+        # DICA: Evite criar o channel dentro da rota, 
+        # mas para teste, vamos focar no erro:
         channel = grpc.insecure_channel('localhost:50051')
         stub = auth_pb2_grpc.AuthServiceStub(channel)
 
-        
         response = stub.RegisterUser(auth_pb2.RegisterRequest(
             name=data.name,
-            email=data.email,
+            email=data.email,   
             password=data.password
         ))
 
         return {"success": response.success, "message": response.message}
-    except grpc.RpcError:
-        raise HTTPException(status_code=500, detail="Erro ao falar com serviço de Auth")
+    except grpc.RpcError as e:
+        # Isso vai mostrar no console se foi 'Unavailable', 'Unimplemented', etc.
+        print(f"gRPC Error: {e.code()} - {e.details()}")
+        raise HTTPException(status_code=500, detail=f"gRPC: {e.code()}")
 
 
 
 PRODUCT_SERVICE_URL = "http://localhost:8001/api"
 
 @app.get("/api/product")
-async def list_products():
+async def list_products(request: Request):
     async with httpx.AsyncClient() as client:
+        auth_header = request.headers.get("Authorization")
         try:
-            
-            response = await client.get(f"{PRODUCT_SERVICE_URL}/product")
+            headers = {"Authorization": auth_header} if auth_header else {}
+            response = await client.get(f"{PRODUCT_SERVICE_URL}/product", headers=headers)
             return response.json()
         except Exception:
             raise HTTPException(status_code=503, detail="Erro ao buscar produtos no estoque")
         
 
 @app.post("/api/product") 
-async def create_product(product_data: dict):
+async def create_product(request: Request, product_data: dict):
     async with httpx.AsyncClient() as client:
+        auth_header = request.headers.get("Authorization")
         try:
-           
-            response = await client.post(f"{PRODUCT_SERVICE_URL}/product", json=product_data)
+            headers = {"Authorization": auth_header} if auth_header else {}
+            response = await client.post(f"{PRODUCT_SERVICE_URL}/product", json=product_data, headers=headers)
             return response.json()
         except Exception:
             raise HTTPException(status_code=503, detail="Erro ao salvar no estoque")
 
 
 @app.get("/api/product/{product_id}")
-async def get_product(product_id: int):
+async def get_product(request: Request, product_id: int):
+    auth_header = request.headers.get("Authorization")
     async with httpx.AsyncClient() as client:
         try:
-            
-            response = await client.get(f"{PRODUCT_SERVICE_URL}/product/{product_id}/")
+            headers = {"Authorization": auth_header} if auth_header else {}
+            response = await client.get(f"{PRODUCT_SERVICE_URL}/product/{product_id}/", headers=headers)
             if response.status_code == 404:
                 raise HTTPException(status_code=404, detail="Produto não encontrado no banco")
             return response.json()
@@ -106,12 +112,15 @@ async def get_product(product_id: int):
 
 
 @app.patch("/api/product/{product_id}")
-async def update_product(product_id: int, product_data: dict):
+async def update_product(request: Request, product_id: int, product_data: dict):
+    auth_header = request.headers.get("Authorization")
     async with httpx.AsyncClient() as client:
         try:
+            headers = {"Authorization": auth_header} if auth_header else {}
             response = await client.patch(
                 f"{PRODUCT_SERVICE_URL}/product/{product_id}/", 
-                json=product_data
+                json=product_data,
+                headers=headers
             )
             return response.json()
         except Exception:
@@ -119,10 +128,12 @@ async def update_product(product_id: int, product_data: dict):
 
 
 @app.delete("/api/product/{product_id}")
-async def delete_product(product_id: int):
+async def delete_product(request: Request, product_id: int):
+    auth_header = request.headers.get("Authorization")
     async with httpx.AsyncClient() as client:
         try:
-            response = await client.delete(f"{PRODUCT_SERVICE_URL}/product/{product_id}/")
+            headers = {"Authorization": auth_header} if auth_header else {}
+            response = await client.delete(f"{PRODUCT_SERVICE_URL}/product/{product_id}/", headers=headers)
             return {"message": "Produto deletado com sucesso"}
         except Exception:
             raise HTTPException(status_code=503, detail="Erro ao deletar produto")
