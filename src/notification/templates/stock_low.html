@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-mail de alerta de estoque</title>
+</head>
+<body
+    style="
+        margin: 0;
+        padding: 0;
+        background-color: #f4f7fb;
+        font-family: Arial, Helvetica, sans-serif;
+    "
+>
+    <table
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="padding: 40px 20px;"
+    >
+        <tr>
+            <td align="center">
+                <table
+                    width="600"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    style="
+                        background: #0a0a0f;
+                        border-radius: 16px;
+                        overflow: hidden;
+                        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                    "
+                >
+                    <!-- HEADER -->
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                background: linear-gradient(135deg, #5331b7, #5331b6);
+                                padding: 40px 20px;
+                                color: white;
+                            "
+                        >
+                            <h1
+                                style="
+                                    margin: 0;
+                                    font-size: 32px;
+                                    font-weight: bold;
+                                "
+                            >
+                                Estoque Pro Max
+                            </h1>
+
+                            <p
+                                style="
+                                    margin-top: 10px;
+                                    font-size: 16px;
+                                    opacity: 0.95;
+                                "
+                            >
+                                Alerta de estoque
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- CONTENT -->
+                    <tr>
+                        <td style="padding: 40px 35px;">
+                            <h2
+                                style="
+                                    margin-top: 0;
+                                    color: white;
+                                    font-size: 28px;
+                                "
+                            >
+                                ⚠️ Estoque baixo detectado 
+                            </h2>
+
+                            <p
+                                style="
+                                    color: white;
+                                    font-size: 16px;
+                                    line-height: 1.7;
+                                    margin-bottom: 24px;
+                                "
+                            >
+                                Identificamos que o item abaixo teve o estoque alterado para {{ total_items }}, ficando abaixo do limite. Reponha o quanto antes para evitar saldo negativo.
+                            </p>
+
+                            <p
+                                style="
+                                    color: white;
+                                    font-size: 16px;
+                                    line-height: 1.7;
+                                    margin-bottom: 24px;
+
+                                "
+                            >
+                                Item afetado
+                            </p>
+
+                            <table
+                                width="100%"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                            >
+                                <tr>
+                                    <th align="center">
+                                        <p
+                                            style="
+                                                display: inline-block;
+                                                background:
+                                                #8B0000 ; 
+                                                color: #ffffff;
+                                                text-decoration: none;
+                                                padding: 16px 32px;
+                                                border-radius: 10px;
+                                                font-size: 16px;
+                                            "
+                                        >
+                                            {{ name_product }}
+                                        </p>
+
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td align="center">
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p
+                                style="
+                                    margin-top: 40px;
+                                    color: #fff;
+                                    font-size: 14px;
+                                    line-height: 1.6;
+                                "
+                            >
+                                Se você não criou uma conta no Estoque Pro Max,
+                                pode ignorar este e-mail com segurança.
+                            </p>
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                background: #0a0a0f;
+                                padding: 24px;
+                                border-top: 1px solid #e5e7eb;
+                            "
+                        >
+                            <p
+                                style="
+                                    margin: 0;
+                                    color: #9ca3af;
+                                    font-size: 13px;
+                                "
+                            >
+                                © Estoque Pro Max. Todos os direitos reservados.
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>
