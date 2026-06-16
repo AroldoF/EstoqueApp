@@ -2,9 +2,9 @@ from .exchanges import exchange_accounts
 from  faststream.rabbit import RabbitQueue
 from .constants import Queue, RoutingKey
 
-user_created_queue = RabbitQueue(
-    name=Queue.USER_CREATED,
-    routing_key=RoutingKey.USER_CREATED,
+stock_low_queue = RabbitQueue(
+    name=Queue.STOCK_LOW,
+    routing_key=RoutingKey.STOCK_KEY,
     durable=True,
 )
 
