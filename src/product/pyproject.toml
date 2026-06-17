@@ -10,4 +10,6 @@ dependencies = [
     "django-cors-headers>=4.9.0",
     "grpcio>=1.80.0",
     "grpcio-tools>=1.80.0",
+    "faststream[cli,rabbit]>=0.7.1",
+    "asgiref>=3.11.1",
 ]
