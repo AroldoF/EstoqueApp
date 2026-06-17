@@ -1,11 +1,11 @@
 from faststream.rabbit import RabbitBroker
 from .broker import broker
 from .constants import Exchange, RoutingKey
-from .events import LowStockEvent
+from .events import StockLowEvent
 from .exchange import exchange
 
 
-async def publish_low_stock(event: LowStockEvent):
+async def publish_low_stock(event: StockLowEvent):
 
     print("evento")
     print(event.model_dump())
@@ -19,6 +19,8 @@ async def publish_low_stock(event: LowStockEvent):
             exchange=exchange,
             routing_key=RoutingKey.STOCK_KEY,
         )
+
+    await broker.stop()
 
     return event.model_dump()
 

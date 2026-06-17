@@ -5,7 +5,7 @@ import asyncio
 from asgiref.sync import  sync_to_async
 
 from infra.messaging.publisher import publish_low_stock
-from infra.messaging.events import LowStockEvent
+from infra.messaging.events import StockLowEvent
 
 def list_product(request):
     user_id = request.auth["user_id"]
@@ -30,8 +30,8 @@ def update_product(request, product_id: int, payload: schemas.ProductUpdate) -> 
     product.save(update_fields=data.keys())
 
     if product.stock < 5:
-
-        event = LowStockEvent(
+        print(request.auth)
+        event = StockLowEvent(
             id=product.id,
             name_product=product.name,
             total_items=product.stock,

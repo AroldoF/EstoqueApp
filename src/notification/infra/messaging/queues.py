@@ -1,4 +1,4 @@
-from .exchanges import exchange_accounts
+from .exchanges import exchange_stock
 from  faststream.rabbit import RabbitQueue
 from .constants import Queue, RoutingKey
 

@@ -97,7 +97,7 @@ class AuthService(auth_pb2_grpc.AuthServiceServicer):
                         message='Erro no servidor'
                     )
                     
-                access_token = create_token(user.user_id)
+                access_token = create_token(user.user_id, user.email)
                 
                 # verificar se vai precisar do refresh_token
                 # refresh_token = create_token(user.user_id, duration_token=timedelta(days=7))
@@ -127,8 +127,8 @@ class AuthService(auth_pb2_grpc.AuthServiceServicer):
             
         return auth_pb2.ValidateTokenResponse(
             is_valid=True,
-            user_id=payload, # O nosso decode atual retorna diretamente o user_id (string)
-            email=''
+            user_id=payload.get("user_id"), # O nosso decode atual retorna diretamente o user_id (string)
+            email=payload.get("email")
         )
 
 

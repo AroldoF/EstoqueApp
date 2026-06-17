@@ -27,7 +27,7 @@ def authenticate_user(db: Session, email: str, password: str):
     if not verify_password(password, user.hashed_password):
         return None
 
-    token = create_token({"sub": user.user_id})
+    token = create_token(user_id=user.user_id, email=email)
 
     return {"access_token": token, "token_type": "bearer", "user": user}
 
