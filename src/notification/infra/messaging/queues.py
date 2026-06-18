@@ -8,3 +8,8 @@ stock_low_queue = RabbitQueue(
     durable=True,
 )
 
+save_notification_queue = RabbitQueue(
+    name=Queue.SAVE_NOTIFICATION,
+    routing_key=RoutingKey.NOTIFICATION,
+    durable=True,
+)

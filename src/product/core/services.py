@@ -33,6 +33,7 @@ def update_product(request, product_id: int, payload: schemas.ProductUpdate) -> 
         print(request.auth)
         event = StockLowEvent(
             id=product.id,
+            user_id=request.auth["user_id"],
             name_product=product.name,
             total_items=product.stock,
             email=request.auth["email"]
